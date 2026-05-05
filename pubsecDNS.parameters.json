@@ -242,6 +242,15 @@
                     ]
                 },
                 {
+                    "privateLinkServiceNamespace": "Microsoft.DBforPostgreSQL/flexibleServers",
+                    "zone": "privatelink.postgres.database.azure.com",
+                    "filterLocationLike": "*",
+                    "groupId": "postgresqlServer",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.postgres.database.azure.com"
+                    ]
+                },
+                {
                     "privateLinkServiceNamespace": "Microsoft.DBforMySQL/servers",
                     "zone": "privatelink.mysql.database.azure.com",
                     "filterLocationLike": "*",

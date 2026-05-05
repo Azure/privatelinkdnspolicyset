@@ -18,33 +18,40 @@ When you create a private endpoint in Azure, you need to create DNS records in p
 
 ## Architecture
 
-The policy set uses a hybrid approach:
+The policy set uses a hybrid approach with **60 total policy configurations**:
 
-### Built-In Policies (20 services)
-Uses Microsoft's native Azure Policy definitions for common services like:
+### Built-In Policies (26 configurations)
+Uses Microsoft's native Azure Policy definitions for common services:
 - Storage Accounts (blob, file, queue, table, dfs, web)
 - Key Vault
-- Azure SQL Database
 - Container Registry
-- Event Hub, Service Bus, Event Grid
+- Event Hub, Service Bus, Event Grid (topics + domains)
 - Web Apps
 - Azure Cache for Redis
-- Search Services
+- Cognitive Search
 - Machine Learning workspaces
-- And more...
+- Azure Synapse (SQL)
+- Data Factory
+- Storage Sync
+- Compute Disk Access
+- IoT Hub, IoT Central, Device Update
+- SignalR
 
-### Custom Policies (30 configurations)
+### Custom Policies (34 configurations)
 Deploys custom policy definitions for services without built-in policies or requiring special configuration:
 - Azure Automation (Webhook, DSC and Hybrid Worker)
-- Azure Synapse (SQL, SQL On-Demand, Dev)
-- Storage secondary endpoints
+- Azure SQL Database
+- Azure Synapse (SQL On-Demand, Dev, Private Link Hub)
+- Storage secondary endpoints (blob, file, queue, table, dfs, web)
 - Cosmos DB (SQL, MongoDB, MongoDB vCore, Cassandra, Gremlin, Table)
-- Database services (PostgreSQL, MySQL, MariaDB)
+- Database services (PostgreSQL, MySQL Single + Flexible Server, MariaDB)
 - AKS clusters (region-specific zones)
-- Backup and Site Recovery
+- Azure Batch (region-specific zones)
+- Backup and Site Recovery (region-specific zones)
 - **Azure AI Foundry** (special multi-zone configuration)
+- Machine Learning (notebooks secondary zone)
 - Redis Enterprise
-- Healthcare APIs
+- Healthcare APIs (FHIR)
 
 ## Azure AI Foundry (Multi-Zone Support)
 
@@ -111,7 +118,7 @@ $assignment = Get-AzPolicyAssignment -Name "dns-private-endpoints" -Scope "/prov
 
 # Grant permissions
 New-AzRoleAssignment `
-  -ObjectId $assignment.Identity.PrincipalId `
+  -ObjectId $assignment.IdentityPrincipalId `
   -RoleDefinitionName "Private DNS Zone Contributor" `
   -Scope "/subscriptions/<subscription-id>/resourceGroups/<resource-group-name>"
 ```
@@ -242,15 +249,15 @@ az network private-endpoint dns-zone-group list `
 ## Files
 
 - **pubsecDNS.bicep**: Main Bicep template deploying policies and policy set
-- **pubsecDNS.parameters.json**: Configuration of DNS zones (50 entries)
+- **pubsecDNS.parameters.json**: Configuration of DNS zones (60 entries)
 - **templates/DNS-PrivateEndpoints/azurepolicy.json**: Custom policy template supporting multi-zone configuration
 
 ## Output
 
 After deployment, the template outputs:
-- `builtInPolicyCount`: Number of policies using Microsoft built-in definitions (20)
-- `customPolicyCount`: Number of custom policies deployed (30)
-- `totalPolicyCount`: Total DNS zone configurations (50)
+- `builtInPolicyCount`: Number of policies using Microsoft built-in definitions (26)
+- `customPolicyCount`: Number of custom policies deployed (34)
+- `totalPolicyCount`: Total DNS zone configurations (60)
 
 ## License
 
